@@ -1,6 +1,7 @@
 import { EMOJI_STYLES } from '../lib/emojiStyles'
-import { convertImageToGrid } from '../lib/convert'
 import type { StyleId } from '../lib/types'
+import { runConvertWorker } from '../lib/workerClient'
+import { ProgressBar } from './ProgressBar'
 import { useAppStore } from '../state/useAppStore'
 
 export function SettingsPanel() {
@@ -12,6 +13,7 @@ export function SettingsPanel() {
   const setGridResult = useAppStore((s) => s.setGridResult)
   const generationError = useAppStore((s) => s.generationError)
   const setGenerationError = useAppStore((s) => s.setGenerationError)
+  const setGenerationProgress = useAppStore((s) => s.setGenerationProgress)
 
   if (!sourceImage) return null
 
@@ -19,13 +21,18 @@ export function SettingsPanel() {
     if (!sourceImage) return
     setIsGenerating(true)
     setGenerationError(null)
+    setGenerationProgress(null)
     try {
-      const result = await convertImageToGrid(sourceImage, settings)
+      const imageBitmap = await createImageBitmap(sourceImage)
+      const result = await runConvertWorker(imageBitmap, settings, (done, total) =>
+        setGenerationProgress({ done, total }),
+      )
       setGridResult(result)
     } catch (err) {
       setGenerationError(err instanceof Error ? err.message : String(err))
     } finally {
       setIsGenerating(false)
+      setGenerationProgress(null)
     }
   }
 
@@ -110,6 +117,8 @@ export function SettingsPanel() {
       <button type="button" onClick={handleGenerate} disabled={isGenerating}>
         {isGenerating ? 'Generowanie…' : 'Generuj emoji art'}
       </button>
+
+      <ProgressBar />
 
       {generationError && <p className="hint hint--error">{generationError}</p>}
     </div>

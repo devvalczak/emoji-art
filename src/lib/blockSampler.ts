@@ -1,3 +1,4 @@
+import { createCanvas, get2dContext } from './canvasUtil'
 import { luminance01, rgbToLab } from './colorSpace'
 import type { CellFeature } from './matcher'
 import { SHAPE_GRID_SIZE } from './types'
@@ -37,11 +38,8 @@ export function sampleImageBlocks(
 ): CellFeature[] {
   const crop = computeCenterCrop(image.width, image.height, cols / rows)
 
-  const canvas = document.createElement('canvas')
-  canvas.width = cols * SHAPE_GRID_SIZE
-  canvas.height = rows * SHAPE_GRID_SIZE
-  const ctx = canvas.getContext('2d', { willReadFrequently: true })
-  if (!ctx) throw new Error('Canvas 2D nie jest dostępny.')
+  const canvas = createCanvas(cols * SHAPE_GRID_SIZE, rows * SHAPE_GRID_SIZE)
+  const ctx = get2dContext(canvas)
   ctx.drawImage(image, crop.sx, crop.sy, crop.sw, crop.sh, 0, 0, canvas.width, canvas.height)
 
   const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height)

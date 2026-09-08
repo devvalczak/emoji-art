@@ -1,3 +1,4 @@
+import { createCanvas, get2dContext } from './canvasUtil'
 import { luminance01, rgbToLab } from './colorSpace'
 import { drawEmoji } from './emojiStyles'
 import { SHAPE_GRID_SIZE, type EmojiFeatureVector, type StyleId } from './types'
@@ -9,11 +10,8 @@ export async function extractEmojiFeatures(
   emoji: string,
   styleId: StyleId,
 ): Promise<EmojiFeatureVector> {
-  const canvas = document.createElement('canvas')
-  canvas.width = RENDER_SIZE
-  canvas.height = RENDER_SIZE
-  const ctx = canvas.getContext('2d', { willReadFrequently: true })
-  if (!ctx) throw new Error('Canvas 2D nie jest dostępny.')
+  const canvas = createCanvas(RENDER_SIZE, RENDER_SIZE)
+  const ctx = get2dContext(canvas)
 
   await drawEmoji(ctx, emoji, styleId, RENDER_SIZE)
   const { data } = ctx.getImageData(0, 0, RENDER_SIZE, RENDER_SIZE)

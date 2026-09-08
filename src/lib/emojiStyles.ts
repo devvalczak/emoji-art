@@ -1,3 +1,4 @@
+import type { AnyCanvasContext2D } from './canvasUtil'
 import type { StyleId } from './types'
 
 export interface EmojiStyleInfo {
@@ -28,7 +29,7 @@ export function systemEmojiFontStack(): string {
  * fetch an image asset (added in a later milestone) fit the same interface.
  */
 export async function drawEmoji(
-  ctx: CanvasRenderingContext2D,
+  ctx: AnyCanvasContext2D,
   emoji: string,
   styleId: StyleId,
   size: number,

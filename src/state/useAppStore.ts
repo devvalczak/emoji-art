@@ -9,6 +9,7 @@ interface AppState {
   gridResult: GridResult | null
   isGenerating: boolean
   generationError: string | null
+  generationProgress: { done: number; total: number } | null
 
   setSourceImage: (img: HTMLImageElement | null) => void
   setSourceError: (message: string | null) => void
@@ -17,6 +18,7 @@ interface AppState {
   setGridResult: (result: GridResult | null) => void
   setIsGenerating: (generating: boolean) => void
   setGenerationError: (message: string | null) => void
+  setGenerationProgress: (progress: { done: number; total: number } | null) => void
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -27,6 +29,7 @@ export const useAppStore = create<AppState>((set) => ({
   gridResult: null,
   isGenerating: false,
   generationError: null,
+  generationProgress: null,
 
   setSourceImage: (img) => set({ sourceImage: img, sourceError: null }),
   setSourceError: (message) => set({ sourceError: message }),
@@ -36,4 +39,5 @@ export const useAppStore = create<AppState>((set) => ({
   setGridResult: (result) => set({ gridResult: result }),
   setIsGenerating: (generating) => set({ isGenerating: generating }),
   setGenerationError: (message) => set({ generationError: message }),
+  setGenerationProgress: (progress) => set({ generationProgress: progress }),
 }))
