@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { isCdnStyle, validateCdnStyle } from '../lib/emojiAssetLoader'
 import { EMOJI_STYLES } from '../lib/emojiStyles'
 import type { MatchMode, StyleId } from '../lib/types'
 import { runConvertWorker } from '../lib/workerClient'
@@ -14,6 +16,27 @@ export function SettingsPanel() {
   const generationError = useAppStore((s) => s.generationError)
   const setGenerationError = useAppStore((s) => s.setGenerationError)
   const setGenerationProgress = useAppStore((s) => s.setGenerationProgress)
+  const styleWarning = useAppStore((s) => s.styleWarning)
+  const setStyleWarning = useAppStore((s) => s.setStyleWarning)
+
+  useEffect(() => {
+    if (!isCdnStyle(settings.styleId)) {
+      setStyleWarning(null)
+      return
+    }
+    let cancelled = false
+    setStyleWarning(null)
+    validateCdnStyle(settings.styleId).catch((err) => {
+      if (cancelled) return
+      const label = EMOJI_STYLES.find((s) => s.id === settings.styleId)?.label ?? settings.styleId
+      setStyleWarning(
+        `Nie udało się połączyć z serwerem grafik dla stylu "${label}" (${err instanceof Error ? err.message : String(err)}). Spróbuj ponownie później albo wybierz styl "Systemowe".`,
+      )
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [settings.styleId, setStyleWarning])
 
   if (!sourceImage) return null
 
@@ -141,6 +164,8 @@ export function SettingsPanel() {
           />
         </label>
       </div>
+
+      {styleWarning && <p className="hint hint--warning">{styleWarning}</p>}
 
       {settings.cols * settings.rows > 10000 && (
         <p className="hint hint--warning">

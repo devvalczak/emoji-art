@@ -186,6 +186,13 @@
   color: #991b1b;
 }
 
+.attribution-footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted, #666);
+}
+
 .result-text {
   white-space: pre;
   overflow-x: auto;

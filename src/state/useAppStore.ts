@@ -10,6 +10,7 @@ interface AppState {
   isGenerating: boolean
   generationError: string | null
   generationProgress: { done: number; total: number } | null
+  styleWarning: string | null
 
   setSourceImage: (img: HTMLImageElement | null) => void
   setSourceError: (message: string | null) => void
@@ -19,6 +20,7 @@ interface AppState {
   setIsGenerating: (generating: boolean) => void
   setGenerationError: (message: string | null) => void
   setGenerationProgress: (progress: { done: number; total: number } | null) => void
+  setStyleWarning: (message: string | null) => void
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -30,6 +32,7 @@ export const useAppStore = create<AppState>((set) => ({
   isGenerating: false,
   generationError: null,
   generationProgress: null,
+  styleWarning: null,
 
   setSourceImage: (img) => set({ sourceImage: img, sourceError: null }),
   setSourceError: (message) => set({ sourceError: message }),
@@ -40,4 +43,5 @@ export const useAppStore = create<AppState>((set) => ({
   setIsGenerating: (generating) => set({ isGenerating: generating }),
   setGenerationError: (message) => set({ generationError: message }),
   setGenerationProgress: (progress) => set({ generationProgress: progress }),
+  setStyleWarning: (message) => set({ styleWarning: message }),
 }))

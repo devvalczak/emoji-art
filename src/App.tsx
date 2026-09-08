@@ -1,3 +1,4 @@
+import { AttributionFooter } from './components/AttributionFooter'
 import { PreviewCanvas } from './components/PreviewCanvas'
 import { ResultTextView } from './components/ResultTextView'
 import { SettingsPanel } from './components/SettingsPanel'
@@ -23,6 +24,8 @@ function App() {
         <SettingsPanel />
         <ResultTextView />
       </main>
+
+      <AttributionFooter />
     </div>
   )
 }
