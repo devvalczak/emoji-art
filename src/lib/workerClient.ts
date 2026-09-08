@@ -23,6 +23,7 @@ function getRenderWorker(): Worker {
 export function runConvertWorker(
   imageBitmap: ImageBitmap,
   settings: Settings,
+  cellAspect: number,
   onProgress: (done: number, total: number) => void,
 ): Promise<GridResult> {
   return new Promise((resolve, reject) => {
@@ -49,7 +50,7 @@ export function runConvertWorker(
 
     w.addEventListener('message', handleMessage)
     w.addEventListener('error', handleError)
-    w.postMessage({ type: 'convert', imageBitmap, settings }, [imageBitmap])
+    w.postMessage({ type: 'convert', imageBitmap, settings, cellAspect }, [imageBitmap])
   })
 }
 

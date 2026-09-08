@@ -26,17 +26,18 @@ export function computeCenterCrop(
 }
 
 /**
- * Crops the image to the cols x rows aspect ratio (cells treated as square
- * for now — real per-cell aspect ratio from font metrics is applied in a
- * later milestone) and samples it into cols x rows cell features, in
- * row-major order.
+ * Crops the image to match cols x rows cells of the given cell aspect ratio
+ * (width/height of a single rendered cell — see aspectRatio.ts, which must
+ * run on the main thread) and samples it into cell features, in row-major
+ * order. cellAspect defaults to 1 (square cells) when not measured.
  */
 export function sampleImageBlocks(
   image: CanvasImageSource & { width: number; height: number },
   cols: number,
   rows: number,
+  cellAspect = 1,
 ): CellFeature[] {
-  const crop = computeCenterCrop(image.width, image.height, cols / rows)
+  const crop = computeCenterCrop(image.width, image.height, (cols / rows) * cellAspect)
 
   const canvas = createCanvas(cols * SHAPE_GRID_SIZE, rows * SHAPE_GRID_SIZE)
   const ctx = get2dContext(canvas)

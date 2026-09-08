@@ -9,10 +9,10 @@ function post(msg: ConvertWorkerResponse) {
 }
 
 self.onmessage = async (e: MessageEvent<ConvertWorkerRequest>) => {
-  const { imageBitmap, settings } = e.data
+  const { imageBitmap, settings, cellAspect } = e.data
   try {
     const palette = await getPaletteFeatures(settings.styleId)
-    const cellFeatures = sampleImageBlocks(imageBitmap, settings.cols, settings.rows)
+    const cellFeatures = sampleImageBlocks(imageBitmap, settings.cols, settings.rows, cellAspect)
     imageBitmap.close()
 
     const total = cellFeatures.length

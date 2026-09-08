@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { measureCellAspect } from '../lib/aspectRatio'
 import { isCdnStyle, validateCdnStyle } from '../lib/emojiAssetLoader'
 import { EMOJI_STYLES } from '../lib/emojiStyles'
 import type { MatchMode, StyleId } from '../lib/types'
@@ -46,8 +47,9 @@ export function SettingsPanel() {
     setGenerationError(null)
     setGenerationProgress(null)
     try {
+      const cellAspect = measureCellAspect(settings)
       const imageBitmap = await createImageBitmap(sourceImage)
-      const result = await runConvertWorker(imageBitmap, settings, (done, total) =>
+      const result = await runConvertWorker(imageBitmap, settings, cellAspect, (done, total) =>
         setGenerationProgress({ done, total }),
       )
       setGridResult(result)
