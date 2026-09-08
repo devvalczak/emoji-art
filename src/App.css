@@ -93,3 +93,56 @@
   margin: 0 auto;
   border-radius: 8px;
 }
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.settings-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text-muted, #666);
+}
+
+.settings-grid input,
+.settings-grid select {
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border, #ccc);
+  font: inherit;
+}
+
+.settings-panel > button {
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent, #6366f1);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.settings-panel > button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.hint--warning {
+  color: #92400e;
+}
+
+.hint--error {
+  color: #991b1b;
+}
+
+.result-text {
+  white-space: pre;
+  overflow-x: auto;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol',
+    sans-serif;
+}

@@ -7,12 +7,16 @@ interface AppState {
   isLoadingSource: boolean
   settings: Settings
   gridResult: GridResult | null
+  isGenerating: boolean
+  generationError: string | null
 
   setSourceImage: (img: HTMLImageElement | null) => void
   setSourceError: (message: string | null) => void
   setIsLoadingSource: (loading: boolean) => void
   updateSettings: (partial: Partial<Settings>) => void
   setGridResult: (result: GridResult | null) => void
+  setIsGenerating: (generating: boolean) => void
+  setGenerationError: (message: string | null) => void
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -21,6 +25,8 @@ export const useAppStore = create<AppState>((set) => ({
   isLoadingSource: false,
   settings: DEFAULT_SETTINGS,
   gridResult: null,
+  isGenerating: false,
+  generationError: null,
 
   setSourceImage: (img) => set({ sourceImage: img, sourceError: null }),
   setSourceError: (message) => set({ sourceError: message }),
@@ -28,4 +34,6 @@ export const useAppStore = create<AppState>((set) => ({
   updateSettings: (partial) =>
     set((state) => ({ settings: { ...state.settings, ...partial } })),
   setGridResult: (result) => set({ gridResult: result }),
+  setIsGenerating: (generating) => set({ isGenerating: generating }),
+  setGenerationError: (message) => set({ generationError: message }),
 }))

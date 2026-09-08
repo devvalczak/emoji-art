@@ -1,4 +1,6 @@
 import { PreviewCanvas } from './components/PreviewCanvas'
+import { ResultTextView } from './components/ResultTextView'
+import { SettingsPanel } from './components/SettingsPanel'
 import { UploadPanel } from './components/UploadPanel'
 import { useAppStore } from './state/useAppStore'
 import './App.css'
@@ -18,6 +20,8 @@ function App() {
       <main className="app-main">
         <UploadPanel />
         <PreviewCanvas />
+        <SettingsPanel />
+        <ResultTextView />
       </main>
     </div>
   )
