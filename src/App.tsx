@@ -1,5 +1,7 @@
 import { AttributionFooter } from './components/AttributionFooter'
+import { ModeToggle } from './components/ModeToggle'
 import { PreviewCanvas } from './components/PreviewCanvas'
+import { ResultImageView } from './components/ResultImageView'
 import { ResultTextView } from './components/ResultTextView'
 import { SettingsPanel } from './components/SettingsPanel'
 import { UploadPanel } from './components/UploadPanel'
@@ -8,6 +10,7 @@ import './App.css'
 
 function App() {
   const sourceError = useAppStore((s) => s.sourceError)
+  const resultMode = useAppStore((s) => s.resultMode)
 
   return (
     <div className="app-shell">
@@ -22,7 +25,8 @@ function App() {
         <UploadPanel />
         <PreviewCanvas />
         <SettingsPanel />
-        <ResultTextView />
+        <ModeToggle />
+        {resultMode === 'text' ? <ResultTextView /> : <ResultImageView />}
       </main>
 
       <AttributionFooter />

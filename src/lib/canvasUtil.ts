@@ -22,3 +22,15 @@ export function get2dContext(canvas: AnyCanvas): AnyCanvasContext2D {
   if (!ctx) throw new Error('Canvas 2D nie jest dostępny.')
   return ctx
 }
+
+export function canvasToBlob(canvas: AnyCanvas): Promise<Blob> {
+  if ('convertToBlob' in canvas) {
+    return canvas.convertToBlob({ type: 'image/png' })
+  }
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) resolve(blob)
+      else reject(new Error('Nie udało się wygenerować obrazu PNG.'))
+    }, 'image/png')
+  })
+}
