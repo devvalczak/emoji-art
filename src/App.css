@@ -94,6 +94,38 @@
   border-radius: 8px;
 }
 
+.match-mode {
+  border: 1px solid var(--border, #ddd);
+  border-radius: 8px;
+  padding: 0.75rem 1rem 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  align-items: center;
+}
+
+.match-mode legend {
+  padding: 0 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text-muted, #666);
+}
+
+.match-mode__option {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.match-mode__weight {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text-muted, #666);
+  flex: 1 1 220px;
+}
+
 .settings-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));

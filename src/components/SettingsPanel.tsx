@@ -1,5 +1,5 @@
 import { EMOJI_STYLES } from '../lib/emojiStyles'
-import type { StyleId } from '../lib/types'
+import type { MatchMode, StyleId } from '../lib/types'
 import { runConvertWorker } from '../lib/workerClient'
 import { ProgressBar } from './ProgressBar'
 import { useAppStore } from '../state/useAppStore'
@@ -39,6 +39,41 @@ export function SettingsPanel() {
   return (
     <div className="panel settings-panel">
       <h2>2. Ustawienia</h2>
+
+      <fieldset className="match-mode">
+        <legend>Sposób dopasowania emoji</legend>
+        {(
+          [
+            ['color', 'Po kolorze'],
+            ['shape', 'Po kształcie'],
+            ['mixed', 'Mieszany'],
+          ] as [MatchMode, string][]
+        ).map(([mode, label]) => (
+          <label key={mode} className="match-mode__option">
+            <input
+              type="radio"
+              name="matchMode"
+              checked={settings.matchMode === mode}
+              onChange={() => updateSettings({ matchMode: mode })}
+            />
+            {label}
+          </label>
+        ))}
+        {settings.matchMode === 'mixed' && (
+          <label className="match-mode__weight">
+            Kolor {Math.round(settings.mixedWeight * 100)}% / Kształt{' '}
+            {Math.round((1 - settings.mixedWeight) * 100)}%
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.05}
+              value={settings.mixedWeight}
+              onChange={(e) => updateSettings({ mixedWeight: Number(e.target.value) })}
+            />
+          </label>
+        )}
+      </fieldset>
 
       <div className="settings-grid">
         <label>
