@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import { DEFAULT_SETTINGS, type GridResult, type Settings } from '../lib/types'
 
 export type ResultMode = 'text' | 'image'
@@ -39,39 +40,52 @@ interface AppState {
   setRenderError: (message: string | null) => void
 }
 
-export const useAppStore = create<AppState>((set) => ({
-  sourceImage: null,
-  sourceError: null,
-  isLoadingSource: false,
-  settings: DEFAULT_SETTINGS,
-  gridResult: null,
-  isGenerating: false,
-  generationError: null,
-  generationProgress: null,
-  styleWarning: null,
+export const useAppStore = create<AppState>()(
+  persist(
+    (set) => ({
+      sourceImage: null,
+      sourceError: null,
+      isLoadingSource: false,
+      settings: DEFAULT_SETTINGS,
+      gridResult: null,
+      isGenerating: false,
+      generationError: null,
+      generationProgress: null,
+      styleWarning: null,
 
-  resultMode: 'text',
-  exportCellPx: 32,
-  imageBlob: null,
-  isRenderingImage: false,
-  renderProgress: null,
-  renderError: null,
+      resultMode: 'text',
+      exportCellPx: 32,
+      imageBlob: null,
+      isRenderingImage: false,
+      renderProgress: null,
+      renderError: null,
 
-  setSourceImage: (img) => set({ sourceImage: img, sourceError: null }),
-  setSourceError: (message) => set({ sourceError: message }),
-  setIsLoadingSource: (loading) => set({ isLoadingSource: loading }),
-  updateSettings: (partial) =>
-    set((state) => ({ settings: { ...state.settings, ...partial } })),
-  setGridResult: (result) => set({ gridResult: result, imageBlob: null }),
-  setIsGenerating: (generating) => set({ isGenerating: generating }),
-  setGenerationError: (message) => set({ generationError: message }),
-  setGenerationProgress: (progress) => set({ generationProgress: progress }),
-  setStyleWarning: (message) => set({ styleWarning: message }),
+      setSourceImage: (img) =>
+        set({ sourceImage: img, sourceError: null, gridResult: null, imageBlob: null }),
+      setSourceError: (message) => set({ sourceError: message }),
+      setIsLoadingSource: (loading) => set({ isLoadingSource: loading }),
+      updateSettings: (partial) =>
+        set((state) => ({ settings: { ...state.settings, ...partial } })),
+      setGridResult: (result) => set({ gridResult: result, imageBlob: null }),
+      setIsGenerating: (generating) => set({ isGenerating: generating }),
+      setGenerationError: (message) => set({ generationError: message }),
+      setGenerationProgress: (progress) => set({ generationProgress: progress }),
+      setStyleWarning: (message) => set({ styleWarning: message }),
 
-  setResultMode: (mode) => set({ resultMode: mode }),
-  setExportCellPx: (px) => set({ exportCellPx: px }),
-  setImageBlob: (blob) => set({ imageBlob: blob }),
-  setIsRenderingImage: (rendering) => set({ isRenderingImage: rendering }),
-  setRenderProgress: (progress) => set({ renderProgress: progress }),
-  setRenderError: (message) => set({ renderError: message }),
-}))
+      setResultMode: (mode) => set({ resultMode: mode }),
+      setExportCellPx: (px) => set({ exportCellPx: px }),
+      setImageBlob: (blob) => set({ imageBlob: blob }),
+      setIsRenderingImage: (rendering) => set({ isRenderingImage: rendering }),
+      setRenderProgress: (progress) => set({ renderProgress: progress }),
+      setRenderError: (message) => set({ renderError: message }),
+    }),
+    {
+      name: 'emoji-art-settings',
+      partialize: (state) => ({
+        settings: state.settings,
+        resultMode: state.resultMode,
+        exportCellPx: state.exportCellPx,
+      }),
+    },
+  ),
+)
