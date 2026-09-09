@@ -1,5 +1,10 @@
 # Emoji Art
 
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
+![Bez backendu](https://img.shields.io/badge/backend-brak-lightgrey)
+
 Zamień dowolne zdjęcie (upload z dysku albo URL) w mozaikę złożoną z emoji, która wizualnie odwzorowuje oryginał. Aplikacja działa w całości w przeglądarce — bez backendu.
 
 ## Spis treści
@@ -10,6 +15,8 @@ Zamień dowolne zdjęcie (upload z dysku albo URL) w mozaikę złożoną z emoji
 - [Struktura projektu](#struktura-projektu)
 - [Znane ograniczenia](#znane-ograniczenia)
 - [Stack technologiczny](#stack-technologiczny)
+- [Rozwój projektu](#rozwój-projektu)
+- [Licencja](#licencja)
 
 ## Szybki start
 
@@ -52,7 +59,7 @@ npm run lint      # oxlint
 4. Dla każdej komórki wybierany jest emoji o najmniejszym dystansie (kolor / kształt / ważona kombinacja obu).
 5. Wynik renderowany jest jako tekst (czcionka emoji przeglądarki) albo jako obraz PNG (prawdziwe grafiki stylu Twemoji/OpenMoji albo `fillText` dla stylu systemowego).
 
-Szczegóły implementacji poszczególnych kroków (z odwołaniami do konkretnych plików) opisuje [`CLAUDE.md`](./CLAUDE.md).
+Szczegóły implementacji poszczególnych kroków (z odwołaniami do konkretnych plików) opisuje [`CLAUDE.md`](./CLAUDE.md) — dokument przeznaczony dla Claude Code, ale przydatny jako mapa architektury dla każdego, kto rozwija ten kod.
 
 ## Struktura projektu
 
@@ -72,7 +79,24 @@ src/
 - **Tryb tekstowy a styl emoji** — prawdziwy tekst zawsze renderuje się czcionką emoji urządzenia osoby, która na niego patrzy. Wybrany styl (Twemoji/OpenMoji) wpływa na to, *które* emoji zostały dobrane, ale nie zagwarantuje identycznego wyglądu w trybie tekstowym — pełną gwarancję stylu daje wyłącznie eksport do PNG, bo tam rysowane są realne grafiki.
 - **Style Twemoji/OpenMoji** pobierają grafiki z jsDelivr (`cdn.jsdelivr.net`) w locie — wymagają połączenia z internetem i dostępności tego CDN-a.
 - **Licencje grafik**: Twemoji — CC-BY 4.0, OpenMoji — CC-BY-SA 4.0 (obrazy wyeksportowane w stylu OpenMoji podlegają wymogowi share-alike). Odpowiednia adnotacja pojawia się w stopce aplikacji przy wybranym stylu.
+- **Brak testów** — patrz uwaga w sekcji [Szybki start](#szybki-start).
 
 ## Stack technologiczny
 
 React + TypeScript + Vite, Zustand (stan), `culori` (konwersje kolorów RGB↔Lab). Brak backendu — całość liczona w przeglądarce (Canvas API, Web Workers, OffscreenCanvas, IndexedDB).
+
+## Rozwój projektu
+
+Projekt nie ma pipeline'u CI ani ustalonego procesu review — poniższe to lokalne minimum przed wysłaniem zmian:
+
+1. `npm run lint` — [oxlint](https://oxc.rs/docs/guide/usage/linter.html) sprawdza podstawowe błędy i styl.
+2. `npm run build` — uruchamia typecheck (`tsc -b`) i weryfikuje, że projekt się buduje.
+3. Ręcznie przetestuj zmianę w przeglądarce (`npm run dev`) — brak automatycznych testów, więc to jedyna weryfikacja funkcjonalna.
+
+Przy zmianach w pipeline'ie dopasowywania (`src/lib/`, `src/workers/`) zajrzyj do [`CLAUDE.md`](./CLAUDE.md) — opisuje przepływ danych i miejsca, w których łatwo o regresję (np. `PALETTE_VERSION` przy zmianie palety lub ekstrakcji cech).
+
+## Licencja
+
+Repozytorium nie zawiera obecnie pliku `LICENSE` ani deklaracji licencji w `package.json` (pakiet jest oznaczony jako `private`). Kod dostępny jest wyłącznie do wglądu w tym repozytorium; jeśli potrzebujesz jawnej licencji open source, otwórz issue.
+
+Grafiki emoji Twemoji i OpenMoji mają własne licencje — patrz sekcja [Znane ograniczenia](#znane-ograniczenia).
