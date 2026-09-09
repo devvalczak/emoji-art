@@ -3,100 +3,100 @@
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
-![Bez backendu](https://img.shields.io/badge/backend-brak-lightgrey)
+![No backend](https://img.shields.io/badge/backend-none-lightgrey)
 
-Zamień dowolne zdjęcie (upload z dysku albo URL) w mozaikę złożoną z emoji, która wizualnie odwzorowuje oryginał. Aplikacja działa w całości w przeglądarce — bez backendu.
+Turn any image (file upload or URL) into a mosaic of emoji that visually resembles the original. The app runs entirely in the browser — no backend.
 
-## Spis treści
+## Table of contents
 
-- [Szybki start](#szybki-start)
-- [Funkcje](#funkcje)
-- [Jak to działa](#jak-to-działa)
-- [Struktura projektu](#struktura-projektu)
-- [Znane ograniczenia](#znane-ograniczenia)
-- [Stack technologiczny](#stack-technologiczny)
-- [Rozwój projektu](#rozwój-projektu)
-- [Licencja](#licencja)
+- [Quick start](#quick-start)
+- [Features](#features)
+- [How it works](#how-it-works)
+- [Project structure](#project-structure)
+- [Known limitations](#known-limitations)
+- [Tech stack](#tech-stack)
+- [Development](#development)
+- [License](#license)
 
-## Szybki start
+## Quick start
 
-Wymagany Node.js 20+.
+Requires Node.js 20+.
 
 ```bash
 npm install
-npm run dev       # serwer deweloperski z HMR
+npm run dev       # dev server with HMR
 ```
 
-Inne dostępne komendy:
+Other available commands:
 
 ```bash
-npm run build     # typecheck (tsc -b) + build produkcyjny do dist/
-npm run preview   # podgląd builda produkcyjnego
+npm run build     # typecheck (tsc -b) + production build to dist/
+npm run preview   # preview the production build
 npm run lint      # oxlint
 ```
 
-> Projekt nie ma jeszcze zestawu testów — `vitest` jest w `devDependencies` jako baza pod przyszłe testy logiki (`src/lib/`), ale nie ma skryptu `test` ani plików `*.test.ts`.
+> The project doesn't have a test suite yet — `vitest` is in `devDependencies` as a base for future tests of the logic in `src/lib/`, but there's no `test` script or `*.test.ts` files.
 
-## Funkcje
+## Features
 
-- **Wejście**: upload pliku graficznego lub wklejony URL obrazu.
-- **Rozdzielczość**: dowolna liczba kolumn × wierszy siatki emoji.
-- **Sposób dopasowania**: po kolorze, po kształcie, albo mieszany z suwakiem wag kolor/kształt.
-- **Styl emoji**: systemowe (czcionka emoji Twojego urządzenia), [Twemoji](https://github.com/jdecked/twemoji) lub [OpenMoji](https://github.com/hfg-gmuend/openmoji) — te dwa ostatnie rysowane jako realne grafiki, więc wyglądają tak samo niezależnie od systemu operacyjnego widza.
-- **Typografia wyniku**: rozmiar czcionki, wysokość linii, odstęp między emoji — z podglądem na żywo, który pokazuje, jaki fragment zdjęcia zostanie przycięty.
-- **Dwa tryby wyniku**:
-  - **Tekst** — prawdziwy, kopiowalny blok tekstu złożony z emoji.
-  - **Obraz** — render do pliku PNG (przydatny przy wysokich rozdzielczościach, gdzie tryb tekstowy przestaje być praktyczny), z konfigurowalnym rozmiarem komórki.
-- Dopasowywanie i renderowanie obrazu działają w Web Workerach (z paskiem postępu), więc interfejs nie zamraża się nawet przy dużych siatkach.
-- Cechy palety emoji (kolor + kształt) są liczone raz i trzymane w pamięci podręcznej (IndexedDB), więc kolejne generowania są dużo szybsze.
-- Ustawienia zapisują się w `localStorage` i wracają po odświeżeniu strony.
+- **Input**: upload an image file or paste an image URL.
+- **Resolution**: any number of columns × rows in the emoji grid.
+- **Matching mode**: by color, by shape, or a mix with a color/shape weight slider.
+- **Emoji style**: system (your device's emoji font), [Twemoji](https://github.com/jdecked/twemoji), or [OpenMoji](https://github.com/hfg-gmuend/openmoji) — the latter two are drawn as real graphics, so they look the same regardless of the viewer's operating system.
+- **Output typography**: font size, line height, letter spacing — with a live preview showing which part of the image will be cropped.
+- **Two output modes**:
+  - **Text** — a real, copyable block of text made of emoji.
+  - **Image** — rendered to a PNG file (useful at high resolutions, where text mode stops being practical), with a configurable cell size.
+- Matching and image rendering run in Web Workers (with a progress bar), so the UI never freezes even on large grids.
+- Emoji palette features (color + shape) are computed once and cached (IndexedDB), so subsequent generations are much faster.
+- Settings are saved in `localStorage` and persist across page reloads.
 
-## Jak to działa
+## How it works
 
-1. Obraz źródłowy jest przycinany do proporcji zgodnej z rzeczywistym kształtem jednej komórki (mierzonym w DOM na podstawie rozmiaru czcionki, wysokości linii i odstępów), a nie zakładanego kwadratu.
-2. Przycięty obraz jest dzielony na siatkę `kolumny × wiersze`, a każda komórka jest próbkowana do średniego koloru (w przestrzeni Lab) oraz uproszczonej mapy jasności 8×8 (kształt).
-3. Każdy kandydat z palety emoji (kilkaset znaków) jest renderowany raz do ukrytego canvasu i analizowany dokładnie w ten sam sposób, więc komórki obrazu i emoji są bezpośrednio porównywalne.
-4. Dla każdej komórki wybierany jest emoji o najmniejszym dystansie (kolor / kształt / ważona kombinacja obu).
-5. Wynik renderowany jest jako tekst (czcionka emoji przeglądarki) albo jako obraz PNG (prawdziwe grafiki stylu Twemoji/OpenMoji albo `fillText` dla stylu systemowego).
+1. The source image is cropped to match the real shape of a single cell (measured in the DOM from font size, line height, and letter spacing), rather than an assumed square.
+2. The cropped image is divided into a `columns × rows` grid, and each cell is sampled down to an average color (in Lab space) plus a simplified 8×8 luminance map (shape).
+3. Every candidate in the emoji palette (a few hundred characters) is rendered once to a hidden canvas and analyzed the exact same way, so image cells and emoji are directly comparable.
+4. For each cell, the emoji with the smallest distance is picked (color / shape / a weighted combination of both).
+5. The result is rendered either as text (the browser's emoji font) or as a PNG image (real graphics for the Twemoji/OpenMoji styles, or `fillText` for the system style).
 
-Szczegóły implementacji poszczególnych kroków (z odwołaniami do konkretnych plików) opisuje [`CLAUDE.md`](./CLAUDE.md) — dokument przeznaczony dla Claude Code, ale przydatny jako mapa architektury dla każdego, kto rozwija ten kod.
+Implementation details for each step (with references to specific files) are documented in [`CLAUDE.md`](./CLAUDE.md) — written for Claude Code, but useful as an architecture map for anyone working on this codebase.
 
-## Struktura projektu
+## Project structure
 
 ```
 src/
-  components/     komponenty UI (upload, ustawienia, podgląd, wyniki tekst/obraz)
-  state/          globalny stan (Zustand, z persystencją ustawień)
-  lib/            cała logika: wczytywanie obrazu, ekstrakcja cech emoji,
-                  próbkowanie obrazu, dopasowywanie, renderowanie, eksport
-  workers/        Web Workery: dopasowywanie emoji (convert.worker.ts)
-                  i render obrazu PNG (render.worker.ts)
+  components/     UI components (upload, settings, preview, text/image results)
+  state/          global state (Zustand, with settings persistence)
+  lib/            all the logic: image loading, emoji feature extraction,
+                  image sampling, matching, rendering, export
+  workers/        Web Workers: emoji matching (convert.worker.ts)
+                  and PNG image rendering (render.worker.ts)
 ```
 
-## Znane ograniczenia
+## Known limitations
 
-- **CORS przy wklejaniu URL** — odczyt pikseli obrazu z innej domeny wymaga, żeby serwer wysyłał nagłówki CORS. Jeśli się nie uda, aplikacja pokaże czytelny komunikat z sugestią pobrania i wgrania pliku ręcznie. To ograniczenie wynika z braku backendu (świadoma decyzja projektowa) i nie da się go obejść wyłącznie po stronie klienta.
-- **Tryb tekstowy a styl emoji** — prawdziwy tekst zawsze renderuje się czcionką emoji urządzenia osoby, która na niego patrzy. Wybrany styl (Twemoji/OpenMoji) wpływa na to, *które* emoji zostały dobrane, ale nie zagwarantuje identycznego wyglądu w trybie tekstowym — pełną gwarancję stylu daje wyłącznie eksport do PNG, bo tam rysowane są realne grafiki.
-- **Style Twemoji/OpenMoji** pobierają grafiki z jsDelivr (`cdn.jsdelivr.net`) w locie — wymagają połączenia z internetem i dostępności tego CDN-a.
-- **Licencje grafik**: Twemoji — CC-BY 4.0, OpenMoji — CC-BY-SA 4.0 (obrazy wyeksportowane w stylu OpenMoji podlegają wymogowi share-alike). Odpowiednia adnotacja pojawia się w stopce aplikacji przy wybranym stylu.
-- **Brak testów** — patrz uwaga w sekcji [Szybki start](#szybki-start).
+- **CORS when pasting a URL** — reading image pixels from another domain requires the server to send CORS headers. If that fails, the app shows a clear message suggesting you download and upload the file manually. This limitation comes from having no backend (a deliberate design choice) and can't be worked around client-side alone.
+- **Text mode vs. emoji style** — real text always renders with the emoji font of whoever is viewing it. The chosen style (Twemoji/OpenMoji) affects *which* emoji get picked, but doesn't guarantee identical appearance in text mode — only the PNG export guarantees the selected style, since that's where real graphics are drawn.
+- **Twemoji/OpenMoji styles** fetch graphics from jsDelivr (`cdn.jsdelivr.net`) on the fly — they require an internet connection and availability of that CDN.
+- **Graphics licenses**: Twemoji — CC-BY 4.0, OpenMoji — CC-BY-SA 4.0 (images exported in the OpenMoji style are subject to the share-alike requirement). The corresponding attribution appears in the app's footer for the selected style.
+- **No tests** — see the note in [Quick start](#quick-start).
 
-## Stack technologiczny
+## Tech stack
 
-React + TypeScript + Vite, Zustand (stan), `culori` (konwersje kolorów RGB↔Lab). Brak backendu — całość liczona w przeglądarce (Canvas API, Web Workers, OffscreenCanvas, IndexedDB).
+React + TypeScript + Vite, Zustand (state), `culori` (RGB↔Lab color conversions). No backend — everything is computed in the browser (Canvas API, Web Workers, OffscreenCanvas, IndexedDB).
 
-## Rozwój projektu
+## Development
 
-Projekt nie ma pipeline'u CI ani ustalonego procesu review — poniższe to lokalne minimum przed wysłaniem zmian:
+The project has no CI pipeline or established review process — the following is the local minimum before sending changes:
 
-1. `npm run lint` — [oxlint](https://oxc.rs/docs/guide/usage/linter.html) sprawdza podstawowe błędy i styl.
-2. `npm run build` — uruchamia typecheck (`tsc -b`) i weryfikuje, że projekt się buduje.
-3. Ręcznie przetestuj zmianę w przeglądarce (`npm run dev`) — brak automatycznych testów, więc to jedyna weryfikacja funkcjonalna.
+1. `npm run lint` — [oxlint](https://oxc.rs/docs/guide/usage/linter.html) checks for basic errors and style.
+2. `npm run build` — runs typecheck (`tsc -b`) and verifies the project builds.
+3. Manually test the change in the browser (`npm run dev`) — there are no automated tests, so this is the only functional verification.
 
-Przy zmianach w pipeline'ie dopasowywania (`src/lib/`, `src/workers/`) zajrzyj do [`CLAUDE.md`](./CLAUDE.md) — opisuje przepływ danych i miejsca, w których łatwo o regresję (np. `PALETTE_VERSION` przy zmianie palety lub ekstrakcji cech).
+For changes to the matching pipeline (`src/lib/`, `src/workers/`), check [`CLAUDE.md`](./CLAUDE.md) — it describes the data flow and the places where regressions are easy to introduce (e.g. bumping `PALETTE_VERSION` when changing the palette or feature extraction).
 
-## Licencja
+## License
 
-Repozytorium nie zawiera obecnie pliku `LICENSE` ani deklaracji licencji w `package.json` (pakiet jest oznaczony jako `private`). Kod dostępny jest wyłącznie do wglądu w tym repozytorium; jeśli potrzebujesz jawnej licencji open source, otwórz issue.
+The repository currently has no `LICENSE` file and no license declared in `package.json` (the package is marked `private`). The code is available for viewing in this repository only; if you need an explicit open-source license, please open an issue.
 
-Grafiki emoji Twemoji i OpenMoji mają własne licencje — patrz sekcja [Znane ograniczenia](#znane-ograniczenia).
+The Twemoji and OpenMoji graphics have their own licenses — see [Known limitations](#known-limitations).
