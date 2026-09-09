@@ -1,11 +1,14 @@
 # Emoji Art
 
+![CI](https://github.com/devvalczak/emoji-art/actions/workflows/ci.yml/badge.svg)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
 ![No backend](https://img.shields.io/badge/backend-none-lightgrey)
 
 Turn any image (file upload or URL) into a mosaic of emoji that visually resembles the original. The app runs entirely in the browser — no backend.
+
+**Live demo:** [devvalczak.github.io/emoji-art](https://devvalczak.github.io/emoji-art/) (deployed from `main`)
 
 ## Table of contents
 
@@ -87,13 +90,22 @@ React + TypeScript + Vite, Zustand (state), `culori` (RGB↔Lab color conversion
 
 ## Development
 
-The project has no CI pipeline or established review process — the following is the local minimum before sending changes:
+There's no established review process beyond CI — the following is the local minimum before sending changes:
 
 1. `npm run lint` — [oxlint](https://oxc.rs/docs/guide/usage/linter.html) checks for basic errors and style.
 2. `npm run build` — runs typecheck (`tsc -b`) and verifies the project builds.
 3. Manually test the change in the browser (`npm run dev`) — there are no automated tests, so this is the only functional verification.
 
+Every push and pull request against `main` runs the same lint + typecheck + build steps in CI (`.github/workflows/ci.yml`), so a red run there means one of the local checks above would have caught it too.
+
 For changes to the matching pipeline (`src/lib/`, `src/workers/`), check [`CLAUDE.md`](./CLAUDE.md) — it describes the data flow and the places where regressions are easy to introduce (e.g. bumping `PALETTE_VERSION` when changing the palette or feature extraction).
+
+### CI/CD
+
+- **CI** (`.github/workflows/ci.yml`) — on every push and pull request against `main`: install, lint, typecheck, build.
+- **CD** (`.github/workflows/deploy.yml`) — on every push to `main`: builds the app and deploys `dist/` to GitHub Pages via `actions/deploy-pages`. Also runnable manually from the Actions tab (`workflow_dispatch`).
+
+One-time repo setup required for deployment to work: in **Settings → Pages**, set **Source** to **GitHub Actions**. Since the app is served from a subpath (`/emoji-art/`) rather than a custom domain, `vite.config.ts` sets `base: '/emoji-art/'` for production builds only — local `dev`/`preview` still run at `/`.
 
 ## License
 
