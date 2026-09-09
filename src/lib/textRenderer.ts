@@ -5,7 +5,7 @@ export function gridToRows(grid: GridResult): string[] {
   for (let r = 0; r < grid.rows; r++) {
     let line = ''
     for (let c = 0; c < grid.cols; c++) {
-      line += grid.cells[r * grid.cols + c].emoji
+      line += grid.cells[r * grid.cols + c].glyph
     }
     rows.push(line)
   }

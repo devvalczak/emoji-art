@@ -1,6 +1,6 @@
 import type { ConvertWorkerResponse } from '../workers/convertWorkerTypes'
 import type { RenderWorkerResponse } from '../workers/renderWorkerTypes'
-import type { GridResult, Settings, StyleId } from './types'
+import type { GridResult, Settings } from './types'
 
 let worker: Worker | null = null
 
@@ -56,7 +56,7 @@ export function runConvertWorker(
 
 export function runRenderWorker(
   grid: GridResult,
-  styleId: StyleId,
+  settings: Settings,
   cellPx: number,
   onProgress: (done: number, total: number) => void,
 ): Promise<Blob> {
@@ -84,6 +84,6 @@ export function runRenderWorker(
 
     w.addEventListener('message', handleMessage)
     w.addEventListener('error', handleError)
-    w.postMessage({ type: 'render', grid, styleId, cellPx })
+    w.postMessage({ type: 'render', grid, settings, cellPx })
   })
 }
