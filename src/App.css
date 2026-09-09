@@ -154,6 +154,26 @@
   font: inherit;
 }
 
+.background-color-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.background-color-field input[type='color'] {
+  padding: 0.15rem;
+  height: 2.1rem;
+  width: 3rem;
+}
+
+.background-color-field__transparent {
+  display: flex;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+}
+
 .settings-panel > button {
   padding: 0.6rem 1.25rem;
   border-radius: 8px;

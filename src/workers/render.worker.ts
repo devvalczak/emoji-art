@@ -8,11 +8,11 @@ function post(msg: RenderWorkerResponse) {
 }
 
 self.onmessage = async (e: MessageEvent<RenderWorkerRequest>) => {
-  const { grid, styleId, cellPx } = e.data
+  const { grid, settings, cellPx } = e.data
   try {
     const canvas = createCanvas(grid.cols * cellPx, grid.rows * cellPx)
     const ctx = get2dContext(canvas)
-    await renderGridToContext(ctx, grid, styleId, cellPx, (done, total) =>
+    await renderGridToContext(ctx, grid, settings, cellPx, (done, total) =>
       post({ type: 'progress', done, total }),
     )
     const blob = await canvasToBlob(canvas)

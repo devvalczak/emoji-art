@@ -1,9 +1,9 @@
-import type { GridResult, StyleId } from '../lib/types'
+import type { GridResult, Settings } from '../lib/types'
 
 export interface RenderWorkerRequest {
   type: 'render'
   grid: GridResult
-  styleId: StyleId
+  settings: Settings
   cellPx: number
 }
 

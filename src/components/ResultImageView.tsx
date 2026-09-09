@@ -42,7 +42,7 @@ export function ResultImageView() {
     setRenderError(null)
     setRenderProgress(null)
     try {
-      const blob = await renderGridToPngBlob(gridResult, settings.styleId, exportCellPx, (done, total) =>
+      const blob = await renderGridToPngBlob(gridResult, settings, exportCellPx, (done, total) =>
         setRenderProgress({ done, total }),
       )
       setImageBlob(blob)
