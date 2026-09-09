@@ -2,6 +2,34 @@
 
 Zamień dowolne zdjęcie (upload z dysku albo URL) w mozaikę złożoną z emoji, która wizualnie odwzorowuje oryginał. Aplikacja działa w całości w przeglądarce — bez backendu.
 
+## Spis treści
+
+- [Szybki start](#szybki-start)
+- [Funkcje](#funkcje)
+- [Jak to działa](#jak-to-działa)
+- [Struktura projektu](#struktura-projektu)
+- [Znane ograniczenia](#znane-ograniczenia)
+- [Stack technologiczny](#stack-technologiczny)
+
+## Szybki start
+
+Wymagany Node.js 20+.
+
+```bash
+npm install
+npm run dev       # serwer deweloperski z HMR
+```
+
+Inne dostępne komendy:
+
+```bash
+npm run build     # typecheck (tsc -b) + build produkcyjny do dist/
+npm run preview   # podgląd builda produkcyjnego
+npm run lint      # oxlint
+```
+
+> Projekt nie ma jeszcze zestawu testów — `vitest` jest w `devDependencies` jako baza pod przyszłe testy logiki (`src/lib/`), ale nie ma skryptu `test` ani plików `*.test.ts`.
+
 ## Funkcje
 
 - **Wejście**: upload pliku graficznego lub wklejony URL obrazu.
@@ -24,17 +52,7 @@ Zamień dowolne zdjęcie (upload z dysku albo URL) w mozaikę złożoną z emoji
 4. Dla każdej komórki wybierany jest emoji o najmniejszym dystansie (kolor / kształt / ważona kombinacja obu).
 5. Wynik renderowany jest jako tekst (czcionka emoji przeglądarki) albo jako obraz PNG (prawdziwe grafiki stylu Twemoji/OpenMoji albo `fillText` dla stylu systemowego).
 
-## Uruchomienie lokalne
-
-Wymagany Node.js 20+.
-
-```bash
-npm install
-npm run dev       # serwer deweloperski z HMR
-npm run build     # typecheck (tsc -b) + build produkcyjny do dist/
-npm run preview   # podgląd builda produkcyjnego
-npm run lint      # oxlint
-```
+Szczegóły implementacji poszczególnych kroków (z odwołaniami do konkretnych plików) opisuje [`CLAUDE.md`](./CLAUDE.md).
 
 ## Struktura projektu
 
@@ -57,4 +75,4 @@ src/
 
 ## Stack technologiczny
 
-React + TypeScript + Vite, Zustand (stan), `culori` (konwersje kolorów RGB↔Lab), Vitest (dostępny do testów logiki). Brak backendu — całość liczona w przeglądarce (Canvas API, Web Workers, OffscreenCanvas, IndexedDB).
+React + TypeScript + Vite, Zustand (stan), `culori` (konwersje kolorów RGB↔Lab). Brak backendu — całość liczona w przeglądarce (Canvas API, Web Workers, OffscreenCanvas, IndexedDB).
